@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Abfahrtstafel</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0a0e14;
+    font-family: 'Courier New', monospace;
+    color: #ffcc00;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .board {
+    width: 100%;
+    max-width: 1000px;
+    background: #111722;
+    border: 4px solid #222c3d;
+    border-radius: 6px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.6);
+  }
+
+  .board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: #1a2332;
+    border-bottom: 3px solid #ffcc00;
+    border-radius: 6px 6px 0 0;
+  }
+
+  .board-header h1 {
+    margin: 0;
+    font-size: 1.4em;
+    letter-spacing: 2px;
+    color: #ffcc00;
+  }
+
+  .controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 0.9em;
+  }
+
+  .controls input[type="time"] {
+    background: #0a0e14;
+    color: #ffcc00;
+    border: 2px solid #ffcc00;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-family: inherit;
+    font-size: 1em;
+  }
+
+  .controls button {
+    background: #ffcc00;
+    color: #0a0e14;
+    border: none;
+    border-radius: 4px;
+    padding: 7px 14px;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .controls button:hover {
+    background: #ffe066;
+  }
+
+  .col-headers {
+    display: grid;
+    grid-template-columns: 90px 110px 1fr 90px 130px;
+    gap: 8px;
+    padding: 10px 24px;
+    font-size: 0.75em;
+    color: #7d8ba1;
+    letter-spacing: 2px;
+    border-bottom: 1px solid #222c3d;
+  }
+
+  .rows {
+    min-height: 340px;
+    position: relative;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 90px 110px 1fr 90px 130px;
+    gap: 8px;
+    padding: 14px 24px;
+    border-bottom: 1px solid #1a2332;
+    font-size: 1.15em;
+    letter-spacing: 1px;
+    align-items: center;
+  }
+
+  .row:nth-child(odd) { background: rgba(255,255,255,0.02); }
+
+  .zeit { color: #ffffff; font-weight: bold; }
+  .linie { color: #66d9ff; font-weight: bold; }
+  .ziel { color: #ffcc00; }
+  .gleis { text-align: center; color: #ffffff; }
+
+  .status { text-align: right; }
+  .status.puenktlich { color: #4caf50; }
+  .status.verspaetet { color: #ff5252; }
+
+  .empty-msg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 340px;
+    font-size: 1.5em;
+    color: #7d8ba1;
+    letter-spacing: 2px;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .board-footer {
+    padding: 10px 24px;
+    font-size: 0.75em;
+    color: #52607a;
+    text-align: right;
+    border-top: 1px solid #222c3d;
+  }
+
+  @keyframes flicker {
+    0% { opacity: 0.3; }
+    100% { opacity: 1; }
+  }
+  .row, .empty-msg { animation: flicker 0.25s ease-in; }
+</style>
+</head>
+<body>
+
+<div class="board">
+  <div class="board-header">
+    <h1 id="bahnhofName">ABFAHRTEN</h1>
+    <div class="controls">
+      <label for="zeitEingabe">Uhrzeit:</label>
+      <input type="time" id="zeitEingabe">
+      <button id="jetztBtn">Jetzt</button>
+    </div>
+  </div>
+
+  <div class="col-headers">
+    <div>ZEIT</div>
+    <div>ZUG</div>
+    <div>ZIEL</div>
+    <div>GLEIS</div>
+    <div>STATUS</div>
+  </div>
+
+  <div class="rows" id="rows"></div>
+
+  <div class="board-footer">Quelle: abfahrten.json</div>
+</div>
+
+<script>
+  const JSON_PFAD = "abfahrten.json";
+  const MIN_ANZAHL = 5;
+
+  let daten = null;
+
+  async function ladeDaten() {
+    try {
+      const antwort = await fetch(JSON_PFAD);
+      daten = await antwort.json();
+      document.getElementById("bahnhofName").textContent =
+        (daten.bahnhof || "ABFAHRTEN").toUpperCase();
+      aktualisierenAufJetzt();
+    } catch (e) {
+      document.getElementById("rows").innerHTML =
+        `<div class="empty-msg">Fehler beim Laden von ${JSON_PFAD}</div>`;
+      console.error(e);
+    }
+  }
+
+  function zeitZuMinuten(zeitStr) {
+    const [h, m] = zeitStr.split(":").map(Number);
+    return h * 60 + m;
+  }
+
+  function aktualisierenAufJetzt() {
+    const jetzt = new Date();
+    const hh = String(jetzt.getHours()).padStart(2, "0");
+    const mm = String(jetzt.getMinutes()).padStart(2, "0");
+    document.getElementById("zeitEingabe").value = `${hh}:${mm}`;
+    render();
+  }
+
+  function render() {
+    const eingabe = document.getElementById("zeitEingabe").value;
+    const rowsEl = document.getElementById("rows");
+    rowsEl.innerHTML = "";
+
+    if (!daten || !eingabe) return;
+
+    const grenze = zeitZuMinuten(eingabe);
+
+    const kommende = daten.abfahrten
+      .filter(a => zeitZuMinuten(a.zeit) >= grenze)
+      .sort((a, b) => zeitZuMinuten(a.zeit) - zeitZuMinuten(b.zeit))
+      .slice(0, Math.max(MIN_ANZAHL, 8));
+
+    if (kommende.length === 0) {
+      rowsEl.innerHTML = `<div class="empty-msg">Siehe Fahrplanaushang am Bahnsteig</div>`;
+      return;
+    }
+
+    kommende.forEach(a => {
+      const verspaetet = a.verspaetung && a.verspaetung > 0;
+      const statusText = verspaetet ? `+${a.verspaetung} Min` : "pünktlich";
+      const statusKlasse = verspaetet ? "verspaetet" : "puenktlich";
+
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `
+        <div class="zeit">${a.zeit}</div>
+        <div class="linie">${a.linie}</div>
+        <div class="ziel">${a.ziel}</div>
+        <div class="gleis">${a.gleis}</div>
+        <div class="status ${statusKlasse}">${statusText}</div>
+      `;
+      rowsEl.appendChild(row);
+    });
+  }
+
+  document.getElementById("zeitEingabe").addEventListener("input", render);
+  document.getElementById("jetztBtn").addEventListener("click", aktualisierenAufJetzt);
+
+  ladeDaten();
+</script>
+
+</body>
+</html>

@@ -225,7 +225,7 @@
     letter-spacing: 1px;
   }
 
-  .cfg-row input {
+  .cfg-row input, .cfg-row select {
     background: #0a0e14;
     border: 1px solid #444;
     color: #ffcc00;
@@ -282,7 +282,12 @@
 <button id="config-btn" onclick="toggleConfig()">⚙</button>
 
 <div id="config-panel">
-  <h3>Uhrzeit einstellen</h3>
+  <h3>Bahnhof</h3>
+  <div class="cfg-row">
+    <label for="cfg-bahnhof">JSON-Datei</label>
+    <select id="cfg-bahnhof" onchange="bahnhofWechseln()"></select>
+  </div>
+  <h3 style="margin-top:14px;">Uhrzeit einstellen</h3>
   <div class="cfg-row">
     <label for="cfg-datum">Datum</label>
     <input type="date" id="cfg-datum">
@@ -300,7 +305,15 @@
 </div>
 
 <script>
-  const JSON_PFAD = "abfahrten.json";
+  // ── Bahnhof-Zuordnung: Bahnhof N = BahnhofN.json ──
+  // Hier einfach weitere Einträge ergänzen, wenn neue Bahnhöfe/JSONs dazukommen.
+  const BAHNHOEFE = [
+    { id: 1, datei: "Bahnhof1.json" },
+    { id: 2, datei: "Bahnhof2.json" },
+    { id: 3, datei: "Bahnhof3.json" }
+  ];
+
+  let JSON_PFAD = BAHNHOEFE[0].datei;
   const MIN_ANZAHL = 5;
 
   let daten = null;
@@ -363,12 +376,30 @@
       daten = await antwort.json();
       document.getElementById("bahnhofName").textContent =
         (daten.bahnhof || "ABFAHRTEN").toUpperCase();
+      manuellAngekommen.clear();
       tick();
     } catch (e) {
       document.getElementById("rows").innerHTML =
         `<div class="empty-msg">Fehler beim Laden von ${JSON_PFAD}</div>`;
       console.error(e);
     }
+  }
+
+  function bahnhofAuswahlBefuellen() {
+    const sel = document.getElementById("cfg-bahnhof");
+    sel.innerHTML = "";
+    BAHNHOEFE.forEach(b => {
+      const opt = document.createElement("option");
+      opt.value = b.datei;
+      opt.textContent = `Bahnhof ${b.id} (${b.datei})`;
+      sel.appendChild(opt);
+    });
+    sel.value = JSON_PFAD;
+  }
+
+  function bahnhofWechseln() {
+    JSON_PFAD = document.getElementById("cfg-bahnhof").value;
+    ladeDaten();
   }
 
   function datumZuTimestamp(datumStr, zeitStr) {
@@ -457,6 +488,7 @@
       const jetzt = getSimulierteZeit();
       document.getElementById("cfg-datum").value = datumStrVon(jetzt);
       document.getElementById("cfg-uhrzeit").value = zeitStrVon(jetzt);
+      document.getElementById("cfg-bahnhof").value = JSON_PFAD;
     }
   }
 
@@ -484,6 +516,7 @@
     document.getElementById("config-panel").classList.remove("open");
   }
 
+  bahnhofAuswahlBefuellen();
   ladeDaten();
 </script>
 

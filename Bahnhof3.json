@@ -1,0 +1,85 @@
+{
+  "bahnhof": "Südhausen",
+  "abfahrten": [
+    {
+      "zeit": "08:02",
+      "linie": "RB 101",
+      "ziel": "Nordheim",
+      "gleis": "3",
+      "verspaetung": 0,
+      "typ": "RB",
+      "datum": "2026-08-15",
+      "ankunft": "07:59"
+    },
+    {
+      "zeit": "08:15",
+      "linie": "RE 12",
+      "ziel": "Südhausen",
+      "gleis": "1",
+      "verspaetung": 5,
+      "typ": "RE",
+      "datum": "2026-08-15",
+      "ankunft": "08:12"
+    },
+    {
+      "zeit": "08:20",
+      "linie": "S 3",
+      "ziel": "Westbrück",
+      "gleis": "2",
+      "verspaetung": 0,
+      "typ": "S",
+      "datum": "2026-08-15",
+      "ankunft": "08:17"
+    },
+    {
+      "zeit": "08:34",
+      "linie": "RB 101",
+      "ziel": "Ostfeld",
+      "gleis": "3",
+      "verspaetung": 0,
+      "typ": "RB",
+      "datum": "2026-08-15",
+      "ankunft": "08:31"
+    },
+    {
+      "zeit": "08:41",
+      "linie": "IC 87",
+      "ziel": "Landeshauptstadt",
+      "gleis": "5",
+      "verspaetung": 10,
+      "typ": "IC",
+      "datum": "2026-08-15",
+      "ankunft": "08:38"
+    },
+    {
+      "zeit": "08:50",
+      "linie": "S 3",
+      "ziel": "Westbrück",
+      "gleis": "2",
+      "verspaetung": 0,
+      "typ": "S",
+      "datum": "2026-08-15",
+      "ankunft": "08:47"
+    },
+    {
+      "zeit": "09:05",
+      "linie": "RE 12",
+      "ziel": "Südhausen",
+      "gleis": "1",
+      "verspaetung": 0,
+      "typ": "RE",
+      "datum": "2026-08-15",
+      "ankunft": "09:02"
+    },
+    {
+      "zeit": "09:15",
+      "linie": "RB 101",
+      "ziel": "Nordheim",
+      "gleis": "3",
+      "verspaetung": 0,
+      "typ": "RB",
+      "datum": "2026-08-15",
+      "ankunft": "09:12"
+    }
+  ]
+}

@@ -43,47 +43,30 @@
     color: #ffcc00;
   }
 
-  .controls {
+  .uhr-anzeige {
     display: flex;
-    gap: 10px;
-    align-items: center;
-    font-size: 0.9em;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.2;
   }
 
-  .controls input[type="time"] {
-    background: #0a0e14;
-    color: #ffcc00;
-    border: 2px solid #ffcc00;
-    border-radius: 4px;
-    padding: 6px 10px;
-    font-family: inherit;
-    font-size: 1em;
-  }
-
-  .controls button {
-    background: #ffcc00;
-    color: #0a0e14;
-    border: none;
-    border-radius: 4px;
-    padding: 7px 14px;
-    font-family: inherit;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .controls button:hover {
-    background: #ffe066;
-  }
-
-  .datum {
+  .uhr-datum {
+    font-size: 0.8em;
     color: #7d8ba1;
     letter-spacing: 1px;
-    margin-right: 4px;
+  }
+
+  .uhr-zeit {
+    font-size: 1.6em;
+    font-weight: bold;
+    color: #ffcc00;
+    letter-spacing: 2px;
+    font-variant-numeric: tabular-nums;
   }
 
   .col-headers {
     display: grid;
-    grid-template-columns: 90px 110px 1fr 90px 130px;
+    grid-template-columns: 34px 90px 110px 1fr 90px 90px 110px;
     gap: 8px;
     padding: 10px 24px;
     font-size: 0.75em;
@@ -99,7 +82,7 @@
 
   .row {
     display: grid;
-    grid-template-columns: 90px 110px 1fr 90px 130px;
+    grid-template-columns: 34px 90px 110px 1fr 90px 90px 110px;
     gap: 8px;
     padding: 14px 24px;
     border-bottom: 1px solid #1a2332;
@@ -110,14 +93,54 @@
 
   .row:nth-child(odd) { background: rgba(255,255,255,0.02); }
 
+  .punkt-zelle { display: flex; align-items: center; justify-content: center; }
+
+  .punkt {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 6px currentColor;
+  }
+
+  .punkt.weiss  { background: #f0f0f0; color: #f0f0f0; }
+  .punkt.gruen  { background: #4caf50; color: #4caf50; }
+  .punkt.gelb   { background: #ffdd00; color: #ffdd00; animation: punkt-puls 0.6s ease-in-out infinite; }
+  .punkt.rot    { background: #ff5252; color: #ff5252; animation: punkt-puls 0.6s ease-in-out infinite; }
+
+  @keyframes punkt-puls {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
   .zeit { color: #ffffff; font-weight: bold; }
   .linie { color: #66d9ff; font-weight: bold; }
   .ziel { color: #ffcc00; }
   .gleis { text-align: center; color: #ffffff; }
 
-  .status { text-align: right; }
-  .status.puenktlich { color: #4caf50; }
-  .status.verspaetet { color: #ff5252; }
+  .verspaetung { text-align: center; }
+  .verspaetung.puenktlich { color: #4caf50; }
+  .verspaetung.verspaetet { color: #ff5252; }
+
+  .status { text-align: right; font-size: 0.85em; }
+  .status.txt-weiss  { color: #f0f0f0; }
+  .status.txt-gruen  { color: #4caf50; }
+  .status.txt-gelb   { color: #ffdd00; }
+  .status.txt-rot    { color: #ff5252; }
+
+  .ankunft-btn {
+    background: transparent;
+    border: 1px solid #4caf50;
+    color: #4caf50;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-family: inherit;
+    font-size: 0.7em;
+    cursor: pointer;
+    margin-left: 8px;
+    letter-spacing: 0.5px;
+  }
+  .ankunft-btn:hover { background: #4caf50; color: #0a0e14; }
 
   .empty-msg {
     display: flex;
@@ -144,6 +167,90 @@
     100% { opacity: 1; }
   }
   .row, .empty-msg { animation: flicker 0.25s ease-in; }
+
+  /* ── Einstellungs-Rad ── */
+  #config-btn {
+    position: fixed;
+    bottom: 14px;
+    right: 14px;
+    background: #1a2332;
+    border: 1px solid #444;
+    color: #888;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+    z-index: 100;
+    font-family: inherit;
+  }
+  #config-btn:hover { background: #222c3d; color: #ffcc00; }
+
+  #config-panel {
+    display: none;
+    position: fixed;
+    bottom: 60px;
+    right: 14px;
+    background: #1a2332;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 16px;
+    z-index: 100;
+    min-width: 260px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+    font-family: 'Courier New', monospace;
+  }
+
+  #config-panel.open { display: block; }
+
+  #config-panel h3 {
+    color: #ffcc00;
+    font-size: 0.85rem;
+    margin: 0 0 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .cfg-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+
+  .cfg-row label {
+    font-size: 0.7rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .cfg-row input {
+    background: #0a0e14;
+    border: 1px solid #444;
+    color: #ffcc00;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.9rem;
+  }
+
+  .cfg-apply, .cfg-jetzt {
+    background: #ffcc00;
+    color: #0a0e14;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 0.85rem;
+    width: 100%;
+    margin-top: 4px;
+  }
+  .cfg-apply:hover, .cfg-jetzt:hover { background: #ffe066; }
+  .cfg-jetzt { background: #333; color: #ffcc00; margin-top: 8px; }
+  .cfg-jetzt:hover { background: #444; }
 </style>
 </head>
 <body>
@@ -151,19 +258,19 @@
 <div class="board">
   <div class="board-header">
     <h1 id="bahnhofName">ABFAHRTEN</h1>
-    <div class="controls">
-      <span id="datumAnzeige" class="datum"></span>
-      <label for="zeitEingabe">Uhrzeit:</label>
-      <input type="time" id="zeitEingabe">
-      <button id="jetztBtn">Jetzt</button>
+    <div class="uhr-anzeige">
+      <div class="uhr-datum" id="datumAnzeige">–</div>
+      <div class="uhr-zeit" id="zeitAnzeige">--:--</div>
     </div>
   </div>
 
   <div class="col-headers">
+    <div></div>
     <div>ZEIT</div>
     <div>ZUG</div>
     <div>ZIEL</div>
     <div>GLEIS</div>
+    <div>VERSP.</div>
     <div>STATUS</div>
   </div>
 
@@ -172,11 +279,83 @@
   <div class="board-footer">Quelle: abfahrten.json</div>
 </div>
 
+<button id="config-btn" onclick="toggleConfig()">⚙</button>
+
+<div id="config-panel">
+  <h3>Uhrzeit einstellen</h3>
+  <div class="cfg-row">
+    <label for="cfg-datum">Datum</label>
+    <input type="date" id="cfg-datum">
+  </div>
+  <div class="cfg-row">
+    <label for="cfg-uhrzeit">Uhrzeit</label>
+    <input type="time" id="cfg-uhrzeit" step="60">
+  </div>
+  <div class="cfg-row">
+    <label for="cfg-minutendauer">Geschwindigkeit (1 Min = … Sek. echt)</label>
+    <input type="number" id="cfg-minutendauer" value="60" min="1" max="3600">
+  </div>
+  <button class="cfg-apply" onclick="applyConfig()">▶ Anwenden &amp; starten</button>
+  <button class="cfg-jetzt" onclick="setzeAufJetzt()">Auf Systemzeit zurücksetzen</button>
+</div>
+
 <script>
   const JSON_PFAD = "abfahrten.json";
   const MIN_ANZAHL = 5;
 
   let daten = null;
+  const manuellAngekommen = new Set(); // Indizes von Zügen, die manuell als "angekommen" markiert wurden
+
+  // ── Simulierte Uhr (wie in innen.html) ──
+  // manuellesStartDatum: "YYYY-MM-DD" oder null (= Systemzeit/-datum)
+  // manuelleStartMs: Millisekunden seit Mitternacht des Startdatums
+  // realStartMs: performance.now() beim Setzen
+  // minutenFaktor: wie viele echte ms eine simulierte Minute dauert
+  let manuellesStartDatum = null;
+  let manuelleStartMs     = null;
+  let realStartMs         = 0;
+  let minutenFaktor       = 60000; // Standard: 1 Min = 60 Sek Echtzeit
+
+  function getSimulierteZeit() {
+    if (manuelleStartMs === null) {
+      return new Date(); // Systemzeit
+    }
+    const vergangenEcht = performance.now() - realStartMs;
+    const vergangenSim  = vergangenEcht * (60000 / minutenFaktor);
+    let simuliertMs     = manuelleStartMs + vergangenSim;
+
+    // Tagesüberlauf berücksichtigen (rollt automatisch auf nächsten Tag)
+    const [j, m, t] = manuellesStartDatum.split("-").map(Number);
+    const basisMitternacht = new Date(j, m - 1, t).getTime();
+    const tageVergangen = Math.floor(simuliertMs / 86400000);
+    simuliertMs = simuliertMs % 86400000;
+
+    return new Date(basisMitternacht + tageVergangen * 86400000 + simuliertMs);
+  }
+
+  function datumStrVon(date) {
+    const j = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const t = String(date.getDate()).padStart(2, "0");
+    return `${j}-${m}-${t}`;
+  }
+
+  function zeitStrVon(date) {
+    const h = String(date.getHours()).padStart(2, "0");
+    const m = String(date.getMinutes()).padStart(2, "0");
+    return `${h}:${m}`;
+  }
+
+  const WOCHENTAGE = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+
+  function tick() {
+    const jetzt = getSimulierteZeit();
+    document.getElementById("zeitAnzeige").textContent = zeitStrVon(jetzt);
+    document.getElementById("datumAnzeige").textContent =
+      `${WOCHENTAGE[jetzt.getDay()]}, ${datumStrVon(jetzt).split("-").reverse().join(".")}`;
+    render(jetzt);
+  }
+  setInterval(tick, 1000);
 
   async function ladeDaten() {
     try {
@@ -184,7 +363,7 @@
       daten = await antwort.json();
       document.getElementById("bahnhofName").textContent =
         (daten.bahnhof || "ABFAHRTEN").toUpperCase();
-      aktualisierenAufJetzt();
+      tick();
     } catch (e) {
       document.getElementById("rows").innerHTML =
         `<div class="empty-msg">Fehler beim Laden von ${JSON_PFAD}</div>`;
@@ -192,69 +371,118 @@
     }
   }
 
-  function zeitZuMinuten(zeitStr) {
-    const [h, m] = zeitStr.split(":").map(Number);
-    return h * 60 + m;
+  function datumZuTimestamp(datumStr, zeitStr) {
+    return new Date(`${datumStr}T${zeitStr}:00`).getTime();
   }
 
-  function zeigeDatum() {
-    const jetzt = new Date();
-    const tage = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
-    const tag = String(jetzt.getDate()).padStart(2, "0");
-    const monat = String(jetzt.getMonth() + 1).padStart(2, "0");
-    const jahr = jetzt.getFullYear();
-    document.getElementById("datumAnzeige").textContent =
-      `${tage[jetzt.getDay()]}, ${tag}.${monat}.${jahr}`;
-  }
-
-  function aktualisierenAufJetzt() {
-    const jetzt = new Date();
-    const hh = String(jetzt.getHours()).padStart(2, "0");
-    const mm = String(jetzt.getMinutes()).padStart(2, "0");
-    document.getElementById("zeitEingabe").value = `${hh}:${mm}`;
-    zeigeDatum();
-    render();
-  }
-
-  function render() {
-    const eingabe = document.getElementById("zeitEingabe").value;
+  function render(jetzt) {
     const rowsEl = document.getElementById("rows");
     rowsEl.innerHTML = "";
 
-    if (!daten || !eingabe) return;
+    if (!daten || !jetzt) return;
 
-    const grenze = zeitZuMinuten(eingabe);
+    const heuteStr = datumStrVon(jetzt);
+    const jetztMs = jetzt.getTime();
 
-    const kommende = daten.abfahrten
-      .filter(a => zeitZuMinuten(a.zeit) >= grenze)
-      .sort((a, b) => zeitZuMinuten(a.zeit) - zeitZuMinuten(b.zeit))
-      .slice(0, Math.max(MIN_ANZAHL, 8));
+    const bewertet = daten.abfahrten.map((a, i) => {
+      const verspaetung = a.verspaetung || 0;
+      const abfahrtGeplantMs = datumZuTimestamp(a.datum || heuteStr, a.zeit);
+      const abfahrtTatsaechlichMs = abfahrtGeplantMs + verspaetung * 60000;
+      const ankunftMs = a.ankunft ? datumZuTimestamp(a.datum || heuteStr, a.ankunft) : null;
+      const istManuellAngekommen = manuellAngekommen.has(i);
 
-    if (kommende.length === 0) {
+      let statusKlasse, statusText;
+      const sekBisAbfahrt = (abfahrtTatsaechlichMs - jetztMs) / 1000;
+      const sekSeitAbfahrt = (jetztMs - abfahrtTatsaechlichMs) / 1000;
+
+      if (sekSeitAbfahrt >= 0) {
+        statusKlasse = "rot";
+        statusText = "abgefahren";
+      } else if (sekBisAbfahrt <= 60) {
+        statusKlasse = "gelb";
+        statusText = "Abfahrt gleich";
+      } else if (istManuellAngekommen || (ankunftMs !== null && jetztMs >= ankunftMs)) {
+        statusKlasse = "gruen";
+        statusText = "am Gleis";
+      } else {
+        statusKlasse = "weiss";
+        statusText = "unterwegs";
+      }
+
+      return { a, i, verspaetung, abfahrtTatsaechlichMs, sekSeitAbfahrt, statusKlasse, statusText };
+    })
+    // Rote Zeilen nach 15 Sekunden entfernen, sonst nach Abfahrtszeit filtern
+    .filter(x => x.sekSeitAbfahrt < 15)
+    .sort((x, y) => x.abfahrtTatsaechlichMs - y.abfahrtTatsaechlichMs)
+    .slice(0, Math.max(MIN_ANZAHL, 8));
+
+    if (bewertet.length === 0) {
       rowsEl.innerHTML = `<div class="empty-msg">Siehe Fahrplanaushang am Bahnsteig</div>`;
       return;
     }
 
-    kommende.forEach(a => {
-      const verspaetet = a.verspaetung && a.verspaetung > 0;
-      const statusText = verspaetet ? `+${a.verspaetung} Min` : "pünktlich";
-      const statusKlasse = verspaetet ? "verspaetet" : "puenktlich";
+    bewertet.forEach(({ a, i, verspaetung, statusKlasse, statusText }) => {
+      const verspaetetKlasse = verspaetung > 0 ? "verspaetet" : "puenktlich";
+      const verspaetungText = verspaetung > 0 ? `+${verspaetung} Min` : "–";
+      const zeigeButton = statusKlasse === "weiss" || statusKlasse === "gelb";
+      const buttonHtml = zeigeButton
+        ? `<button class="ankunft-btn" onclick="manuellAlsAngekommenMarkieren(${i})">Ist da</button>`
+        : "";
 
       const row = document.createElement("div");
       row.className = "row";
       row.innerHTML = `
+        <div class="punkt-zelle"><span class="punkt ${statusKlasse}"></span></div>
         <div class="zeit">${a.zeit}</div>
         <div class="linie">${a.linie}</div>
         <div class="ziel">${a.ziel}</div>
         <div class="gleis">${a.gleis}</div>
-        <div class="status ${statusKlasse}">${statusText}</div>
+        <div class="verspaetung ${verspaetetKlasse}">${verspaetungText}</div>
+        <div class="status txt-${statusKlasse}">${statusText}${buttonHtml}</div>
       `;
       rowsEl.appendChild(row);
     });
   }
 
-  document.getElementById("zeitEingabe").addEventListener("input", render);
-  document.getElementById("jetztBtn").addEventListener("click", aktualisierenAufJetzt);
+  function manuellAlsAngekommenMarkieren(index) {
+    manuellAngekommen.add(index);
+    tick();
+  }
+
+  // ── Einstellungs-Panel ──
+  function toggleConfig() {
+    const panel = document.getElementById("config-panel");
+    panel.classList.toggle("open");
+    if (panel.classList.contains("open")) {
+      const jetzt = getSimulierteZeit();
+      document.getElementById("cfg-datum").value = datumStrVon(jetzt);
+      document.getElementById("cfg-uhrzeit").value = zeitStrVon(jetzt);
+    }
+  }
+
+  function applyConfig() {
+    const datumVal = document.getElementById("cfg-datum").value;
+    const uhrzeitVal = document.getElementById("cfg-uhrzeit").value;
+    const minutendauer = parseInt(document.getElementById("cfg-minutendauer").value) || 60;
+
+    if (!datumVal || !uhrzeitVal) return;
+
+    const [hh, mm] = uhrzeitVal.split(":").map(Number);
+    manuellesStartDatum = datumVal;
+    manuelleStartMs = (hh * 60 + mm) * 60000;
+    realStartMs = performance.now();
+    minutenFaktor = minutendauer * 1000;
+
+    tick();
+    document.getElementById("config-panel").classList.remove("open");
+  }
+
+  function setzeAufJetzt() {
+    manuellesStartDatum = null;
+    manuelleStartMs = null;
+    tick();
+    document.getElementById("config-panel").classList.remove("open");
+  }
 
   ladeDaten();
 </script>

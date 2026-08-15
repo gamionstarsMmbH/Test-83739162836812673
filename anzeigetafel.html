@@ -75,6 +75,12 @@
     background: #ffe066;
   }
 
+  .datum {
+    color: #7d8ba1;
+    letter-spacing: 1px;
+    margin-right: 4px;
+  }
+
   .col-headers {
     display: grid;
     grid-template-columns: 90px 110px 1fr 90px 130px;
@@ -146,6 +152,7 @@
   <div class="board-header">
     <h1 id="bahnhofName">ABFAHRTEN</h1>
     <div class="controls">
+      <span id="datumAnzeige" class="datum"></span>
       <label for="zeitEingabe">Uhrzeit:</label>
       <input type="time" id="zeitEingabe">
       <button id="jetztBtn">Jetzt</button>
@@ -190,11 +197,22 @@
     return h * 60 + m;
   }
 
+  function zeigeDatum() {
+    const jetzt = new Date();
+    const tage = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+    const tag = String(jetzt.getDate()).padStart(2, "0");
+    const monat = String(jetzt.getMonth() + 1).padStart(2, "0");
+    const jahr = jetzt.getFullYear();
+    document.getElementById("datumAnzeige").textContent =
+      `${tage[jetzt.getDay()]}, ${tag}.${monat}.${jahr}`;
+  }
+
   function aktualisierenAufJetzt() {
     const jetzt = new Date();
     const hh = String(jetzt.getHours()).padStart(2, "0");
     const mm = String(jetzt.getMinutes()).padStart(2, "0");
     document.getElementById("zeitEingabe").value = `${hh}:${mm}`;
+    zeigeDatum();
     render();
   }
 

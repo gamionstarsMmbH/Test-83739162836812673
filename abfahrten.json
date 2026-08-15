@@ -7,7 +7,8 @@
       "ziel": "Nordheim",
       "gleis": "3",
       "verspaetung": 0,
-      "typ": "RB"
+      "typ": "RB",
+      "datum": "2026-08-15"
     },
     {
       "zeit": "08:15",
@@ -15,7 +16,8 @@
       "ziel": "Südhausen",
       "gleis": "1",
       "verspaetung": 5,
-      "typ": "RE"
+      "typ": "RE",
+      "datum": "2026-08-15"
     },
     {
       "zeit": "08:20",
@@ -23,7 +25,8 @@
       "ziel": "Westbrück",
       "gleis": "2",
       "verspaetung": 0,
-      "typ": "S"
+      "typ": "S",
+      "datum": "2026-08-15"
     },
     {
       "zeit": "08:34",
@@ -31,7 +34,8 @@
       "ziel": "Ostfeld",
       "gleis": "3",
       "verspaetung": 0,
-      "typ": "RB"
+      "typ": "RB",
+      "datum": "2026-08-15"
     },
     {
       "zeit": "08:41",
@@ -39,7 +43,8 @@
       "ziel": "Landeshauptstadt",
       "gleis": "5",
       "verspaetung": 10,
-      "typ": "IC"
+      "typ": "IC",
+      "datum": "2026-08-15"
     },
     {
       "zeit": "08:50",
@@ -47,7 +52,8 @@
       "ziel": "Westbrück",
       "gleis": "2",
       "verspaetung": 0,
-      "typ": "S"
+      "typ": "S",
+      "datum": "2026-08-15"
     },
     {
       "zeit": "09:05",
@@ -55,7 +61,8 @@
       "ziel": "Südhausen",
       "gleis": "1",
       "verspaetung": 0,
-      "typ": "RE"
+      "typ": "RE",
+      "datum": "2026-08-15"
     },
     {
       "zeit": "09:15",
@@ -63,7 +70,8 @@
       "ziel": "Nordheim",
       "gleis": "3",
       "verspaetung": 0,
-      "typ": "RB"
+      "typ": "RB",
+      "datum": "2026-08-15"
     }
   ]
 }
